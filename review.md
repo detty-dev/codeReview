@@ -14,7 +14,7 @@
 
 ### Functionalities:
 
-    * stop(): This function can only be called by authorized wards and is used to stop the oracle. Stopping the oracle means it will not provide price information until it's started again.
+   * stop(): This function can only be called by authorized wards and is used to stop the oracle. Stopping the oracle means it will not provide price information until it's started again.
 
     * start(): Similar to the stop() function, start() can only be called by authorized wards, and it is used to remove the stop flag, allowing the oracle to resume providing price information.
 
@@ -39,6 +39,27 @@
     * diss(): Authorized wards can remove one or multiple addresses from the whitelist in the bud mapping.
 
     * rely() and deny(): These are standard authorization functions.
+
+### iNTERFACES;: 
+
+        interface AddressProviderLike {
+        function get_registry() external view returns (address);
+}   
+
+       interface CurveRegistryLike {
+       function get_n_coins(address) external view returns (uint256[2] calldata);
+}
+
+       interface CurvePoolLike {
+       function coins(uint256) external view returns (address);
+       function get_virtual_price() external view returns (uint256);
+       function lp_token() external view returns (address);
+       function remove_liquidity(uint256, uint256[2] calldata) external returns (uint256);
+}
+
+       interface OracleLike {
+       function read() external view returns (uint256);
+}
 
 ## CurveLPOracleFactory:
 
@@ -146,7 +167,7 @@
     The contract maintains a mapping called bud to whitelist addresses.
     The toll modifier ensures that only whitelisted addresses can execute certain functions.
 
-    # Feed Structs:
+# Feed Structs:
 
     Two feed structures, cur and nxt, store the current and queued prices along with their validity status.
 
@@ -194,7 +215,7 @@ orbs.push(_orbs[i]);: The valid oracle addresses are added to the orbs array, wh
 
 # Admin Role Assignment:               
         require(_ward != address(0), "CurveLPOracle/ward-0");: This line checks if the provided _ward address (an admin address) is not zero.
-          require(_ward != address(0), "CurveLPOracle/ward-0");
+          require(_ward != address(0), "CurveLPOracle/ward-0");m 
 
         wards[_ward] = 1;: It sets the admin address (the _ward) in the wards mapping to 1, indicating that this address has administrative privileges within the contract.
                     wards[_ward] = 1;
@@ -481,5 +502,6 @@ This function is publicly callable (external) and can be executed by an authoriz
     A fallback function marked as payable is included for potential reentrancy checks in the Curve pool.
 
 
-
+### CONCLUSION;:
+    For good practice i suggest variable name and function name should give an hint of what it is implementing, that was one of the major chanllenge i encountered when reviewing this code.
 
